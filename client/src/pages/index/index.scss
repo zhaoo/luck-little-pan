@@ -1,0 +1,21 @@
+.index {
+  .userinfo {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .avatar {
+      display: block;
+      width: 200px;
+      height: 200px;
+      overflow: hidden;
+      border-radius: 50%;
+    }
+
+    .nickname {
+      margin-top: 20px;
+    }
+  }
+}

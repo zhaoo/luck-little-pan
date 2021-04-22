@@ -1,4 +1,10 @@
 .index {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+
   .userinfo {
     margin-top: 50px;
     display: flex;
@@ -17,5 +23,10 @@
     .nickname {
       margin-top: 20px;
     }
+  }
+
+  .text {
+    font-size: 48px;
+    font-weight: 400;
   }
 }

@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { View, OpenData, Picker, Text, Button } from '@tarojs/components';
-import useDB from '../../hooks/useDB';
+import useDB from '@/hooks/useDB';
+import useStorage from '../../hooks/useStorage';
+import { setStorageItem } from '../../utils/storage';
 import './index.scss';
 
 const buttonStatusMap = {
@@ -11,6 +13,7 @@ const buttonStatusMap = {
 
 export default function() {
   const dbList = useDB();
+  const storageList = useStorage();
   const timmerRef = useRef(null);
   const [list, setList] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -18,8 +21,8 @@ export default function() {
   const [text, setText] = useState('小潘吃什么？');
 
   useEffect(() => {
-    setList(dbList);
-  }, [dbList]);
+    setList([].concat(storageList).concat(dbList));
+  }, [dbList, storageList]);
 
   useEffect(() => {
     if (buttonStatus === 'running') {
@@ -45,7 +48,16 @@ export default function() {
           <OpenData type='userNickName' lang='zh_CN' defaultText='用户' />
         </View>
       </View>
-      <Text className='text'>{text}</Text>
+      <Text
+        className='text'
+        onClick={() => {
+          if (Object.values(buttonStatusMap).indexOf(text) < 0) {
+            setStorageItem(text);
+          }
+        }}
+      >
+        {text}
+      </Text>
       <Button
         onClick={() => {
           setButtonStatus(buttonStatus !== 'running' ? 'running' : 'pause');

@@ -1,13 +1,16 @@
 import { useEffect, useState, useRef } from 'react';
+import Taro from '@tarojs/taro';
 import { View, OpenData, Picker, Text } from '@tarojs/components';
 import Button from '@/components/button';
 import useDB from '@/hooks/useDB';
 import useStorage from '@/hooks/useStorage';
+import usePOI from '@/hooks/usePOI';
 import { setStorageItem } from '@/utils/storage';
 import { BUTTON_STATUS_MAP } from '@/constants/index';
 import './index.scss';
 
 export default function() {
+  const poiList = usePOI();
   const dbList = useDB();
   const storageList = useStorage();
   const timmerRef = useRef(null);
@@ -17,8 +20,13 @@ export default function() {
   const [text, setText] = useState(BUTTON_STATUS_MAP['ready']);
 
   useEffect(() => {
-    setList([].concat(storageList).concat(dbList));
-  }, [dbList, storageList]);
+    setList(
+      []
+        .concat(storageList)
+        .concat(poiList)
+        .concat(dbList)
+    );
+  }, [dbList, storageList, poiList]);
 
   useEffect(() => {
     if (buttonStatus === 'running') {
@@ -49,6 +57,11 @@ export default function() {
         onClick={() => {
           if (Object.values(BUTTON_STATUS_MAP).indexOf(text) < 0) {
             setStorageItem(text);
+            Taro.showToast({
+              title: '添加"喜欢"成功',
+              icon: 'success',
+              duration: 2000
+            });
           }
         }}
       >

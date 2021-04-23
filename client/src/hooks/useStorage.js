@@ -7,7 +7,7 @@ export default function useStorage() {
   useEffect(() => {
     const list = getStorageSync();
     if (list.length > 0) {
-      setData([{ name: '我的收藏', list }]);
+      setData([{ name: '我的喜欢', list }]);
     }
   }, []);
 

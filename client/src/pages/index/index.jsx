@@ -1,15 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
-import { View, OpenData, Picker, Text, Button } from '@tarojs/components';
+import { View, OpenData, Picker, Text } from '@tarojs/components';
+import Button from '@/components/button';
 import useDB from '@/hooks/useDB';
-import useStorage from '../../hooks/useStorage';
-import { setStorageItem } from '../../utils/storage';
+import useStorage from '@/hooks/useStorage';
+import { setStorageItem } from '@/utils/storage';
+import { BUTTON_STATUS_MAP } from '@/constants/index';
 import './index.scss';
-
-const buttonStatusMap = {
-  ready: '小潘吃什么？',
-  pause: '不行换一个！',
-  running: '就决定是你啦！'
-};
 
 export default function() {
   const dbList = useDB();
@@ -18,7 +14,7 @@ export default function() {
   const [list, setList] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [buttonStatus, setButtonStatus] = useState('ready');
-  const [text, setText] = useState('小潘吃什么？');
+  const [text, setText] = useState(BUTTON_STATUS_MAP['ready']);
 
   useEffect(() => {
     setList([].concat(storageList).concat(dbList));
@@ -51,7 +47,7 @@ export default function() {
       <Text
         className='text'
         onClick={() => {
-          if (Object.values(buttonStatusMap).indexOf(text) < 0) {
+          if (Object.values(BUTTON_STATUS_MAP).indexOf(text) < 0) {
             setStorageItem(text);
           }
         }}
@@ -63,7 +59,7 @@ export default function() {
           setButtonStatus(buttonStatus !== 'running' ? 'running' : 'pause');
         }}
       >
-        {buttonStatusMap[buttonStatus]}
+        {BUTTON_STATUS_MAP[buttonStatus]}
       </Button>
       <Picker
         mode='selector'

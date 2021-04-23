@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getStorageSync } from '../utils/storage';
+import { getStorageSync } from '@/utils/storage';
 
 export default function useStorage() {
   const [data, setData] = useState(null);

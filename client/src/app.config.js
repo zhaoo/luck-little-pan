@@ -1,7 +1,5 @@
 export default {
-  pages: [
-    'pages/index/index'
-  ],
+  pages: ['pages/index/index'],
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#fff',
@@ -9,4 +7,4 @@ export default {
     navigationBarTextStyle: 'black'
   },
   cloud: true
-}
+};

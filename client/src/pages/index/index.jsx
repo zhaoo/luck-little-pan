@@ -1,12 +1,12 @@
-import { useEffect, useState, useRef } from "react";
-import { View, OpenData, Picker, Text, Button } from "@tarojs/components";
-import useDB from "../../hooks/useDB";
-import "./index.scss";
+import { useEffect, useState, useRef } from 'react';
+import { View, OpenData, Picker, Text, Button } from '@tarojs/components';
+import useDB from '../../hooks/useDB';
+import './index.scss';
 
 const buttonStatusMap = {
-  ready: "小潘吃什么？",
-  pause: "不行换一个！",
-  running: "就决定是你啦！"
+  ready: '小潘吃什么？',
+  pause: '不行换一个！',
+  running: '就决定是你啦！'
 };
 
 export default function() {
@@ -14,17 +14,21 @@ export default function() {
   const timmerRef = useRef(null);
   const [list, setList] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [buttonStatus, setButtonStatus] = useState("ready");
-  const [text, setText] = useState("小潘吃什么？");
+  const [buttonStatus, setButtonStatus] = useState('ready');
+  const [text, setText] = useState('小潘吃什么？');
 
   useEffect(() => {
     setList(dbList);
   }, [dbList]);
 
   useEffect(() => {
-    if (buttonStatus === "running") {
+    if (buttonStatus === 'running') {
       timmerRef.current = setInterval(() => {
-        setText(list[currentIndex]?.list[Math.floor(Math.random() * list[currentIndex]?.list.length)]);
+        setText(
+          list[currentIndex]?.list[
+            Math.floor(Math.random() * list[currentIndex]?.list.length)
+          ]
+        );
       }, 100);
     } else {
       clearInterval(timmerRef.current);
@@ -32,25 +36,25 @@ export default function() {
   }, [buttonStatus]);
 
   return (
-    <View className="index">
-      <View className="userinfo">
-        <View className="avatar">
-          <OpenData type="userAvatarUrl" lang="zh_CN" />
+    <View className='index'>
+      <View className='userinfo'>
+        <View className='avatar'>
+          <OpenData type='userAvatarUrl' lang='zh_CN' />
         </View>
-        <View className="nickname">
-          <OpenData type="userNickName" lang="zh_CN" defaultText="用户" />
+        <View className='nickname'>
+          <OpenData type='userNickName' lang='zh_CN' defaultText='用户' />
         </View>
       </View>
-      <Text className="text">{text}</Text>
+      <Text className='text'>{text}</Text>
       <Button
         onClick={() => {
-          setButtonStatus(buttonStatus !== "running" ? "running" : "pause");
+          setButtonStatus(buttonStatus !== 'running' ? 'running' : 'pause');
         }}
       >
         {buttonStatusMap[buttonStatus]}
       </Button>
       <Picker
-        mode="selector"
+        mode='selector'
         range={list.map(item => item?.name)}
         onChange={e => setCurrentIndex(e.detail.value)}
       >

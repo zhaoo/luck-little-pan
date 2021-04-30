@@ -1,30 +1,41 @@
-import { useEffect, useState, useRef } from "react";
-import { View, OpenData, Picker, Text, Button } from "@tarojs/components";
-import useDB from "../../hooks/useDB";
-import "./index.scss";
-
-const buttonStatusMap = {
-  ready: "小潘吃什么？",
-  pause: "不行换一个！",
-  running: "就决定是你啦！"
-};
+import { useEffect, useState, useRef } from 'react';
+import Taro from '@tarojs/taro';
+import { View, OpenData, Picker, Text } from '@tarojs/components';
+import Button from '@/components/button';
+import useDB from '@/hooks/useDB';
+import useStorage from '@/hooks/useStorage';
+import usePOI from '@/hooks/usePOI';
+import { setStorageItem } from '@/utils/storage';
+import { BUTTON_STATUS_MAP } from '@/constants/index';
+import './index.scss';
 
 export default function() {
+  const poiList = usePOI();
   const dbList = useDB();
+  const storageList = useStorage();
   const timmerRef = useRef(null);
   const [list, setList] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [buttonStatus, setButtonStatus] = useState("ready");
-  const [text, setText] = useState("小潘吃什么？");
+  const [buttonStatus, setButtonStatus] = useState('ready');
+  const [text, setText] = useState(BUTTON_STATUS_MAP['ready']);
 
   useEffect(() => {
-    setList(dbList);
-  }, [dbList]);
+    setList(
+      []
+        .concat(storageList)
+        .concat(poiList)
+        .concat(dbList)
+    );
+  }, [dbList, storageList, poiList]);
 
   useEffect(() => {
-    if (buttonStatus === "running") {
+    if (buttonStatus === 'running') {
       timmerRef.current = setInterval(() => {
-        setText(list[currentIndex]?.list[Math.floor(Math.random() * list[currentIndex]?.list.length)]);
+        setText(
+          list[currentIndex]?.list[
+            Math.floor(Math.random() * list[currentIndex]?.list.length)
+          ]
+        );
       }, 100);
     } else {
       clearInterval(timmerRef.current);
@@ -32,25 +43,39 @@ export default function() {
   }, [buttonStatus]);
 
   return (
-    <View className="index">
-      <View className="userinfo">
-        <View className="avatar">
-          <OpenData type="userAvatarUrl" lang="zh_CN" />
+    <View className='index'>
+      <View className='userinfo'>
+        <View className='avatar'>
+          <OpenData type='userAvatarUrl' lang='zh_CN' />
         </View>
-        <View className="nickname">
-          <OpenData type="userNickName" lang="zh_CN" defaultText="用户" />
+        <View className='nickname'>
+          <OpenData type='userNickName' lang='zh_CN' defaultText='用户' />
         </View>
       </View>
-      <Text className="text">{text}</Text>
-      <Button
+      <Text
+        className='text'
         onClick={() => {
-          setButtonStatus(buttonStatus !== "running" ? "running" : "pause");
+          if (Object.values(BUTTON_STATUS_MAP).indexOf(text) < 0) {
+            setStorageItem(text);
+            Taro.showToast({
+              title: '添加"喜欢"成功',
+              icon: 'success',
+              duration: 2000
+            });
+          }
         }}
       >
-        {buttonStatusMap[buttonStatus]}
+        {text}
+      </Text>
+      <Button
+        onClick={() => {
+          setButtonStatus(buttonStatus !== 'running' ? 'running' : 'pause');
+        }}
+      >
+        {BUTTON_STATUS_MAP[buttonStatus]}
       </Button>
       <Picker
-        mode="selector"
+        mode='selector'
         range={list.map(item => item?.name)}
         onChange={e => setCurrentIndex(e.detail.value)}
       >
